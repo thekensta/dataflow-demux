@@ -26,23 +26,38 @@ public class PartitionExample {
     public static void main(String [] args) {
 
 
-        Map<String, Integer> eventToIndex = new HashMap<String, Integer>();
-        eventToIndex.put("error", 0);
-        eventToIndex.put("unknown", 1);
-        eventToIndex.put("search", 2);
-        eventToIndex.put("purchase", 3);
-
-        Map<Integer, String> indexToEvent = new HashMap<Integer, String>();
-        for (String key : eventToIndex.keySet()) {
-            indexToEvent.put(eventToIndex.get(key), key);
-        }
 
 
-        ExampleOptions exampleOptions = PipelineOptionsFactory.fromArgs(args)
-                .create().as(ExampleOptions.class);
+
+        ExampleOptions exampleOptions = PipelineOptionsFactory
+                .fromArgs(args)
+                .withValidation()
+                .as(ExampleOptions.class);
 
         String inputSource = exampleOptions.getInputSource();
         String outputFolder = exampleOptions.getOutputFolder();
+
+        String eventList = exampleOptions.getEventList();
+        String [] eventNames = eventList.split(",");
+
+
+        /*
+         * Build the events to identify from the command line
+         */
+        Map<String, Integer> eventToIndex = new HashMap<>();
+        eventToIndex.put("error", 0);
+        eventToIndex.put("unknown", 1);
+
+        int i = 2;
+        for (String e: eventNames) {
+            eventToIndex.put(e, i);
+            i += 1;
+        }
+
+        Map<Integer, String> indexToEvent = new HashMap<>();
+        for (String key : eventToIndex.keySet()) {
+            indexToEvent.put(eventToIndex.get(key), key);
+        }
 
         Pipeline pipeline = Pipeline.create(exampleOptions);
 

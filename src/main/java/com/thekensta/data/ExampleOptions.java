@@ -19,4 +19,9 @@ public interface ExampleOptions extends PipelineOptions {
     String getOutputFolder();
     void setOutputFolder(String outputFolder);
 
+    @Description("Comma delimited events to match")
+    @Default.String("search,purchase")
+    String getEventList();
+    void setEventList(String eventList);
+
 }
